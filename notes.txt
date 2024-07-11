@@ -1,0 +1,45 @@
+https://earn.superteam.fun/listings/hackathon/new-wallet-design-and-swap-functionality-st-talent-olympics/
+
+
+New Wallet with Swap Functionality
+- Create Account
+- Import Account via nemonic
+- See assets such as Tokens and NFTs
+- See Recent transactions
+- See total value of assets
+- See total value of each assets
+
+Swap
+- Trasnfer SOL
+- Transfer Fungible Tokens
+- Transfer NFTs
+- Swap functionality with atleast 4 assets
+
+NOTES:
+Worry about design later, the app needs to be effective first
+
+
+https://earn.superteam.fun/listings/hackathon/oracle-aggregator-st-talent-olympics/
+
+Oracle Aggregator
+
+Oracle Integration: Fetch price feeds from at least two different oracle providers.
+Data Aggregation: Compute the average of the fetched price feeds. 
+Frontend Display: Present the aggregated data on the UI.
+Deployment: Ensure the application can be tested and deployed on Cloudflare or Vercel.
+
+Design and develop an Oracle Aggregator for a DeFi application. The aggregator should pull price feeds from at least two different oracle sources, calculate an average, and display it on the frontend (FE). Note- for this bounty, you MUST use the new Pyth oracle model. 
+
+
+Backend
+- Should get current price and get average (average market price)
+- summation of price of current asset/ number of oracle
+- 120(pyth) + 121(switchboard)/ 2 (pyth + switchboard) example
+
+Fe
+- Search by address
+- get result from backend
+
+
+https://earn.superteam.fun/listings/hackathon/tooling-data-explorerdashboard-st-talent-olympics/
+Tooling Data Explorer/Dashboard
