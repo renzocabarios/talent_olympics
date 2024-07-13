@@ -8,6 +8,7 @@ import StartPage from "./views/start";
 import * as bip39 from "bip39";
 import { Keypair } from "@solana/web3.js";
 import SendPage from "./views/send";
+import SendSPLPage from "./views/send-spl";
 
 // TODOs
 // Create Wallet
@@ -29,6 +30,7 @@ function App() {
   return (
     <div className="w-[360px] flex flex-col gap-4 min-h-[400px]">
       {current == "send" && <SendPage />}
+      {current == "send-spl" && <SendSPLPage />}
       {current == "" && <StartPage />}
       {current == "import" && <ImportPage />}
       {current == "create" && <CreateAccountPage />}

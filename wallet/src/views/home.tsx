@@ -15,7 +15,7 @@ function truncateAddress(address: string) {
 }
 
 export default function HomePage() {
-  const { publicKey } = useStore();
+  const { publicKey, setTokenPublicKey, setCurrent } = useStore();
   const { data, isLoading, isError } = useGetFungibleTokens({
     ownerAddress: publicKey,
   });
@@ -60,7 +60,14 @@ export default function HomePage() {
         <SolBalance />
         {data.map((e: any) => {
           return (
-            <div className="p-2 bg-primary flex justify-between text-primary-foreground">
+            <div
+              key={e.id}
+              onClick={() => {
+                setTokenPublicKey(e.id);
+                setCurrent("send-spl");
+              }}
+              className="p-2 bg-primary flex justify-between text-primary-foreground"
+            >
               <div className="flex items-center gap-2">
                 <Avatar>
                   <AvatarImage
@@ -70,7 +77,7 @@ export default function HomePage() {
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-                <div key={e.token_info.id} className="flex flex-col">
+                <div className="flex flex-col">
                   <p>{e.content.metadata.name}</p>
                   <p>
                     {formatUnits(e.token_info.balance, e.token_info.decimals)}{" "}

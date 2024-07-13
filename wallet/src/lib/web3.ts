@@ -1,6 +1,7 @@
 import {
   Connection,
   Keypair,
+  ParsedAccountData,
   PublicKey,
   SystemProgram,
   Transaction,
@@ -33,4 +34,13 @@ export function transferSolTransaction({
       lamports,
     })
   );
+}
+
+export async function getNumberDecimals(mintAddress: string): Promise<number> {
+  const info = await CONNECTION.getParsedAccountInfo(
+    new PublicKey(mintAddress)
+  );
+  const result = (info.value?.data as ParsedAccountData).parsed.info
+    .decimals as number;
+  return result;
 }
