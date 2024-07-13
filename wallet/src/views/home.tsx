@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import { useStore } from "@/lib/store/store";
 import useGetFungibleTokens from "@/hooks/useGetFungibleTokens";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useGetBalance from "@/hooks/useGetBalance";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 function formatUnits(value: string | number, decimals: string | number) {
   return Number(value) * 10 ** -Number(decimals);
@@ -25,9 +27,11 @@ export default function HomePage() {
       }, 0),
     [data, isLoading, isError]
   );
+
   if (isLoading || isError) {
     return <></>;
   }
+
   return (
     <>
       <div className="flex flex-col items-center gap-2 justify-center">
@@ -39,21 +43,21 @@ export default function HomePage() {
         >
           {truncateAddress(publicKey)}
         </p>
-        <p className="text-2xl font-bold">${total.toFixed(2)}</p>
+        <p className="text-4xl font-bold">${total.toFixed(2)}</p>
 
         <div className="flex items-center gap-2">
-          <p>$0.00</p>
-          <p className="text-red-500">-29%</p>
+          {/* <p>$0.00</p> */}
+          {/* <p className="text-red-500">-29%</p> */}
         </div>
       </div>
 
       <div className="flex justify-between p-2">
         <Button>Send</Button>
-        <Button>Receive</Button>
         <Button>Swap</Button>
       </div>
 
       <div className="flex flex-col gap-1">
+        <SolBalance />
         {data.map((e: any) => {
           return (
             <div className="p-2 bg-primary flex justify-between text-primary-foreground">
@@ -82,12 +86,44 @@ export default function HomePage() {
                     2
                   )}
                 </p>
-                <p className="text-red-500">-$0.03</p>
+                {/* <p className="text-red-500">-$0.03</p> */}
               </div>
             </div>
           );
         })}
       </div>
     </>
+  );
+}
+
+function SolBalance() {
+  const { data } = useGetBalance();
+  const { setCurrent } = useStore();
+  return (
+    <div
+      onClick={() => {
+        setCurrent("send");
+      }}
+      className="p-2 bg-primary flex justify-between text-primary-foreground"
+    >
+      <div className="flex items-center gap-2">
+        <Avatar>
+          <AvatarImage src={"https://github.com/shadcn.png"} />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col">
+          <p>SOLANA</p>
+
+          <p>{(data ?? 0) / LAMPORTS_PER_SOL} SOL</p>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-1">
+        {/* <p>
+        ${Number(e.token_info?.price_info?.total_price ?? 0).toFixed(2)}
+      </p> */}
+        {/* <p className="text-red-500">-$0.03</p> */}
+      </div>
+    </div>
   );
 }
