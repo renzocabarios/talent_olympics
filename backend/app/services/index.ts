@@ -1,3 +1,4 @@
 import HELIUS from "./helius";
+import JUPITER from "./jupiter";
 
-export { HELIUS };
+export { JUPITER, HELIUS };

@@ -47,7 +47,7 @@ export default function SendSPLPage() {
 
   return (
     <Form {...form}>
-      <p>Send SPL TOKEN {tokenPublicKey}</p>
+      <p>Send SPL TOKEN</p>
       <FormField
         control={form.control}
         name="address"
