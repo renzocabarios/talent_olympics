@@ -1,11 +1,6 @@
 import { API_INSTANCE } from "@/lib/http";
 import { CONNECTION, getKeypairFromNemomnic } from "@/lib/web3";
-import {
-  AddressLookupTableAccount,
-  ComputeBudgetProgram,
-  TransactionMessage,
-  VersionedTransaction,
-} from "@solana/web3.js";
+import { VersionedTransaction } from "@solana/web3.js";
 import { useMutation } from "@tanstack/react-query";
 interface IGetQuoteParams {
   outputMint: string;

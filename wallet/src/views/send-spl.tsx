@@ -13,11 +13,13 @@ import {
 import { useEffect } from "react";
 import { useStore } from "@/lib/store/store";
 import useSendSplToken from "@/hooks/useSendSplToken";
+import { ChevronLeft } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function SendSPLPage() {
   const { mutate, isSuccess, isPending } = useSendSplToken();
 
-  const { setCurrent, tokenPublicKey } = useStore();
+  const { setCurrent, tokenPublicKey, tokenName, tokenImage } = useStore();
 
   const form = useForm<SendSolSchema>({
     resolver: zodResolver(SendSolSchema),
@@ -47,7 +49,20 @@ export default function SendSPLPage() {
 
   return (
     <Form {...form}>
-      <p>Send SPL TOKEN</p>
+      <ChevronLeft
+        onClick={() => {
+          setCurrent("home");
+        }}
+      ></ChevronLeft>
+
+      <div className="flex items-center gap-4 justify-center">
+        <Avatar>
+          <AvatarImage src={tokenImage} />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <p className="text-xl font-bold">Send {tokenName}</p>
+      </div>
+
       <FormField
         control={form.control}
         name="address"
@@ -75,9 +90,12 @@ export default function SendSPLPage() {
           )}
         />
       </div>
-
-      <Button onClick={form.handleSubmit(onSubmit)} className="w-full">
-        Send
+      <Button
+        size={"lg"}
+        className="w-full p-2 text-xl text-white sticky bottom-0 right-0"
+        onClick={form.handleSubmit(onSubmit)}
+      >
+        Send Now!
       </Button>
     </Form>
   );

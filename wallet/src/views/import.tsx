@@ -12,6 +12,7 @@ import { useForm, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImportSchema } from "../lib/schemas/import.schema";
 import { useStore } from "@/lib/store/store";
+import { ChevronLeft } from "lucide-react";
 
 export default function ImportPage() {
   const { setCurrent } = useStore();
@@ -36,12 +37,21 @@ export default function ImportPage() {
 
   return (
     <Form {...form}>
-      <div className="flex flex-col gap-2">
-        <p>Input Secret Recovery Phrase</p>
-        <PhraseForm />
-      </div>
+      <ChevronLeft
+        onClick={() => {
+          setCurrent("");
+        }}
+      ></ChevronLeft>
 
-      <Button onClick={form.handleSubmit(onSubmit)} className="w-full">
+      <div className="flex items-center justify-center">
+        <p className="text-xl font-bold">Input Secret Recovery Phrase</p>
+      </div>
+      <PhraseForm />
+      <Button
+        size={"lg"}
+        className="w-full p-2 text-xl text-white sticky bottom-0 right-0"
+        onClick={form.handleSubmit(onSubmit)}
+      >
         Import Wallet
       </Button>
     </Form>

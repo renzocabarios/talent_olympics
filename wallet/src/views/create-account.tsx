@@ -1,79 +1,54 @@
 import { useEffect, useState } from "react";
 import * as bip39 from "bip39";
-import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { CreateAccountSchema } from "../lib/schemas/create_account.schema";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { useForm, useFormContext } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useStore } from "@/lib/store/store";
+import { ChevronLeft } from "lucide-react";
+import { Keypair } from "@solana/web3.js";
 
 export default function CreateAccountPage() {
   const [nemonic, setnemonic] = useState("");
 
-  const { setCurrent } = useStore();
+  const { setCurrent, setPublicKey } = useStore();
 
   useEffect(() => {
     setnemonic(bip39.generateMnemonic());
   }, []);
 
-  const form = useForm<CreateAccountSchema>({
-    resolver: zodResolver(CreateAccountSchema),
-  });
-
-  function onSubmit(values: CreateAccountSchema) {
-    localStorage.setItem("password", values.password);
+  function onSubmit() {
     localStorage.setItem("nemonic", nemonic);
+
+    if (nemonic) {
+      const seed = bip39.mnemonicToSeedSync(nemonic, "");
+      const keypair = Keypair.fromSeed(seed.subarray(0, 32));
+      setPublicKey(keypair.publicKey.toString());
+      setCurrent("home");
+    }
     setCurrent("home");
   }
-
-  return (
-    <Form {...form}>
-      <CreatePassword />
-      <p>Secret Recovery Phrase</p>
-      <p>{nemonic}</p>
-
-      <Button onClick={form.handleSubmit(onSubmit)} className="w-full">
-        Create Account
-      </Button>
-    </Form>
-  );
-}
-
-function CreatePassword() {
-  const form = useFormContext();
+  // 0.019985
   return (
     <>
-      <Form {...form}>
-        <div className="flex flex-col gap-2">
-          <p>Create a password</p>
+      <ChevronLeft
+        onClick={() => {
+          setCurrent("");
+        }}
+      ></ChevronLeft>
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter password"
-                    {...field}
-                  />
-                </FormControl>
+      <div className="flex items-center justify-center">
+        <p className="text-xl font-bold">Create Account</p>
+      </div>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-      </Form>
+      <div className="flex flex-col gap-2">
+        <p>Secret Recovery Phrase</p>
+        <p className="bg-gray-900 rounded-xl p-4">{nemonic}</p>
+      </div>
+      <Button
+        size={"lg"}
+        className="w-full p-2 text-xl text-white sticky bottom-0 right-0"
+        onClick={onSubmit}
+      >
+        Create Account
+      </Button>
     </>
   );
 }

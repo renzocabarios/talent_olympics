@@ -15,7 +15,13 @@ function truncateAddress(address: string) {
 }
 
 export default function HomePage() {
-  const { publicKey, setTokenPublicKey, setCurrent } = useStore();
+  const {
+    publicKey,
+    setTokenPublicKey,
+    setCurrent,
+    setTokenName,
+    setTokenImage,
+  } = useStore();
   const { data, isLoading, isError } = useGetFungibleTokens({
     ownerAddress: publicKey,
   });
@@ -45,26 +51,10 @@ export default function HomePage() {
         </p>
         <p className="text-4xl font-bold">${total.toFixed(2)}</p>
 
-        <div className="flex items-center gap-2">
-          {/* <p>$0.00</p> */}
-          {/* <p className="text-red-500">-29%</p> */}
-        </div>
+        <div className="flex items-center gap-2"></div>
       </div>
 
-      {/* <div className="flex  justify-between p-2">
-        <Button
-          onClick={() => {
-            setCurrent("swap");
-          }}
-        >
-          Swap
-        </Button>
-      </div> */}
-
       <div className="flex flex-col gap-1">
-        <SolBalance />
-        <SolBalance />
-        <SolBalance />
         <SolBalance />
         {data.map((e: any) => {
           return (
@@ -72,9 +62,14 @@ export default function HomePage() {
               key={e.id}
               onClick={() => {
                 setTokenPublicKey(e.id);
+
+                setTokenName(e.content.metadata.name);
+                setTokenImage(
+                  e.content?.links?.image ?? "https://github.com/shadcn.png"
+                );
                 setCurrent("send-spl");
               }}
-              className="p-2 bg-primary rounded-xl flex justify-between text-primary-foreground"
+              className="p-2 rounded-xl flex justify-between text-white"
             >
               <div className="flex items-center gap-2">
                 <Avatar>
@@ -87,7 +82,7 @@ export default function HomePage() {
                 </Avatar>
                 <div className="flex flex-col">
                   <p>{e.content.metadata.name}</p>
-                  <p>
+                  <p className="text-xs">
                     {formatUnits(e.token_info.balance, e.token_info.decimals)}{" "}
                     {e.content.metadata.symbol}
                   </p>
@@ -101,7 +96,6 @@ export default function HomePage() {
                     2
                   )}
                 </p>
-                {/* <p className="text-red-500">-$0.03</p> */}
               </div>
             </div>
           );
@@ -129,7 +123,7 @@ function SolBalance() {
       onClick={() => {
         setCurrent("send");
       }}
-      className="p-2 rounded-xl bg-primary flex justify-between text-primary-foreground"
+      className="p-2 rounded-xl text-white flex justify-between "
     >
       <div className="flex items-center gap-2">
         <Avatar>
@@ -139,15 +133,8 @@ function SolBalance() {
         <div className="flex flex-col">
           <p>SOLANA</p>
 
-          <p>{(data ?? 0) / LAMPORTS_PER_SOL} SOL</p>
+          <p className="text-xs">{(data ?? 0) / LAMPORTS_PER_SOL} SOL</p>
         </div>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        {/* <p>
-        ${Number(e.token_info?.price_info?.total_price ?? 0).toFixed(2)}
-      </p> */}
-        {/* <p className="text-red-500">-$0.03</p> */}
       </div>
     </div>
   );

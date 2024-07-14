@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SendSolSchema } from "@/lib/schemas/send_sol.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,10 +13,8 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -29,10 +26,10 @@ import { useEffect } from "react";
 import { useStore } from "@/lib/store/store";
 import useGetSwap from "@/hooks/useGetSwap";
 import { SwapSchema } from "@/lib/schemas/swap.schema";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { ArrowDown, Check, ChevronLeft, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const languages = [
+const tokens = [
   { label: "SOL", value: "So11111111111111111111111111111111111111112" },
   { label: "USDC", value: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" },
   { label: "USDT", value: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB" },
@@ -41,7 +38,7 @@ const languages = [
 
 export default function SwapPage() {
   const { mutate, isPending, isSuccess } = useGetSwap();
-  const { setCurrent, tokenPublicKey } = useStore();
+  const { setCurrent } = useStore();
 
   const form = useForm<SwapSchema>({
     resolver: zodResolver(SwapSchema),
@@ -71,13 +68,21 @@ export default function SwapPage() {
 
   return (
     <Form {...form}>
-      <p>Send SPL TOKEN {tokenPublicKey}</p>
+      <ChevronLeft
+        onClick={() => {
+          setCurrent("home");
+        }}
+      ></ChevronLeft>
+
+      <div className="flex items-center justify-center">
+        <p className="text-xl font-bold">Swap Tokens</p>
+      </div>
+
       <FormField
         control={form.control}
         name="inputMint"
         render={({ field }) => (
           <FormItem className="flex flex-col">
-            <FormLabel>Input</FormLabel>
             <Popover>
               <PopoverTrigger asChild>
                 <FormControl>
@@ -90,20 +95,20 @@ export default function SwapPage() {
                     )}
                   >
                     {field.value
-                      ? languages.find(
+                      ? tokens.find(
                           (language) => language.value === field.value
                         )?.label
-                      : "Select language"}
+                      : "Select Token"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent className=" p-0">
                 <Command>
-                  {/* <CommandInput placeholder="Search language..." /> */}
-                  <CommandEmpty>No language found.</CommandEmpty>
+                  <CommandInput placeholder="Search tokens..." />
+                  <CommandEmpty>No tokens found.</CommandEmpty>
                   <CommandGroup>
-                    {languages.map((language) => (
+                    {tokens.map((language) => (
                       <CommandItem
                         value={language.label}
                         key={language.value}
@@ -131,12 +136,33 @@ export default function SwapPage() {
         )}
       />
 
+      <div className="relative w-full">
+        <p className="top-3 right-2 absolute text-xs">
+          {tokens.find((e) => e.value == form.watch("inputMint"))?.label ?? ""}
+        </p>
+        <FormField
+          control={form.control}
+          name="amount"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="amount" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
+      <div className="w-full flex items-center justify-center">
+        <ArrowDown size={15} />
+      </div>
+
       <FormField
         control={form.control}
         name="outputMint"
         render={({ field }) => (
           <FormItem className="flex flex-col">
-            <FormLabel>Output</FormLabel>
             <Popover>
               <PopoverTrigger asChild>
                 <FormControl>
@@ -149,20 +175,20 @@ export default function SwapPage() {
                     )}
                   >
                     {field.value
-                      ? languages.find(
+                      ? tokens.find(
                           (language) => language.value === field.value
                         )?.label
-                      : "Select language"}
+                      : "Select Token"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </FormControl>
               </PopoverTrigger>
               <PopoverContent className=" p-0">
                 <Command>
-                  {/* <CommandInput placeholder="Search language..." /> */}
-                  <CommandEmpty>No language found.</CommandEmpty>
+                  <CommandInput placeholder="Search tokens..." />
+                  <CommandEmpty>No tokens found.</CommandEmpty>
                   <CommandGroup>
-                    {languages.map((language) => (
+                    {tokens.map((language) => (
                       <CommandItem
                         value={language.label}
                         key={language.value}
@@ -189,24 +215,13 @@ export default function SwapPage() {
           </FormItem>
         )}
       />
-      <div className="relative w-full">
-        <p className="top-2 right-2 absolute">Amount to convert</p>
-        <FormField
-          control={form.control}
-          name="amount"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="amount" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
 
-      <Button onClick={form.handleSubmit(onSubmit)} className="w-full">
-        Send
+      <Button
+        size={"lg"}
+        className="w-full p-2 text-xl text-white sticky bottom-0 right-0"
+        onClick={form.handleSubmit(onSubmit)}
+      >
+        Swap Now!
       </Button>
     </Form>
   );

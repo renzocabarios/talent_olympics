@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { useEffect } from "react";
 import { useStore } from "@/lib/store/store";
+import { ChevronLeft } from "lucide-react";
 
 export default function SendPage() {
   const { mutate, isSuccess, isPending } = useSendTransaction();
@@ -54,7 +55,16 @@ export default function SendPage() {
 
   return (
     <Form {...form}>
-      <p>Send SOL</p>
+      <ChevronLeft
+        onClick={() => {
+          setCurrent("home");
+        }}
+      ></ChevronLeft>
+
+      <div className="flex items-center justify-center">
+        <p className="text-xl font-bold">Send SOL</p>
+      </div>
+
       <FormField
         control={form.control}
         name="address"
@@ -82,9 +92,12 @@ export default function SendPage() {
           )}
         />
       </div>
-
-      <Button onClick={form.handleSubmit(onSubmit)} className="w-full">
-        Send
+      <Button
+        size={"lg"}
+        className="w-full p-2 text-xl text-white sticky bottom-0 right-0"
+        onClick={form.handleSubmit(onSubmit)}
+      >
+        Send Now!
       </Button>
     </Form>
   );
