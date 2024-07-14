@@ -51,12 +51,20 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="flex justify-between p-2">
-        <Button>Send</Button>
-        <Button>Swap</Button>
-      </div>
+      {/* <div className="flex  justify-between p-2">
+        <Button
+          onClick={() => {
+            setCurrent("swap");
+          }}
+        >
+          Swap
+        </Button>
+      </div> */}
 
       <div className="flex flex-col gap-1">
+        <SolBalance />
+        <SolBalance />
+        <SolBalance />
         <SolBalance />
         {data.map((e: any) => {
           return (
@@ -66,7 +74,7 @@ export default function HomePage() {
                 setTokenPublicKey(e.id);
                 setCurrent("send-spl");
               }}
-              className="p-2 bg-primary flex justify-between text-primary-foreground"
+              className="p-2 bg-primary rounded-xl flex justify-between text-primary-foreground"
             >
               <div className="flex items-center gap-2">
                 <Avatar>
@@ -99,6 +107,16 @@ export default function HomePage() {
           );
         })}
       </div>
+
+      <Button
+        size={"lg"}
+        className="w-full p-2 text-xl text-white sticky bottom-0 right-0"
+        onClick={() => {
+          setCurrent("swap");
+        }}
+      >
+        Swap
+      </Button>
     </>
   );
 }
@@ -111,7 +129,7 @@ function SolBalance() {
       onClick={() => {
         setCurrent("send");
       }}
-      className="p-2 bg-primary flex justify-between text-primary-foreground"
+      className="p-2 rounded-xl bg-primary flex justify-between text-primary-foreground"
     >
       <div className="flex items-center gap-2">
         <Avatar>

@@ -2,6 +2,7 @@ import { API_INSTANCE } from "@/lib/http";
 import { CONNECTION, getKeypairFromNemomnic } from "@/lib/web3";
 import {
   AddressLookupTableAccount,
+  ComputeBudgetProgram,
   TransactionMessage,
   VersionedTransaction,
 } from "@solana/web3.js";
@@ -10,69 +11,41 @@ interface IGetQuoteParams {
   outputMint: string;
   inputMint: string;
   amount: string | number;
-  userPublicKey: string;
+  userPublicKey?: string;
 }
 
 async function getSwap(params: IGetQuoteParams) {
-  const data = await API_INSTANCE.get("api/v1/wallet/swap", { params });
   try {
     const nemonic = localStorage.getItem("nemonic");
 
     if (nemonic) {
       const from = getKeypairFromNemomnic(nemonic);
-
-      const {
-        swapTransaction,
-        lastValidBlockHeight,
-        // prioritizationFeeLamports,
-      } = data.data.data[0];
-
-      const swapTransactionBuf = Buffer.from(swapTransaction, "base64");
-      const transaction = VersionedTransaction.deserialize(swapTransactionBuf);
-      console.log(transaction.message.addressTableLookups);
-
-      const addressLookupTableAccounts = await Promise.all(
-        transaction.message.addressTableLookups.map(async (lookup) => {
-          return new AddressLookupTableAccount({
-            key: lookup.accountKey,
-            state: AddressLookupTableAccount.deserialize(
-              //@ts-ignore
-              await CONNECTION.getAccountInfo(lookup.accountKey).then(
-                (res: any) => res.data
-              )
-            ),
-          });
-        })
-      );
-
-      const message = TransactionMessage.decompile(transaction.message, {
-        addressLookupTableAccounts: addressLookupTableAccounts,
+      const data = await API_INSTANCE.get("api/v1/wallet/swap", {
+        params: { ...params, userPublicKey: from.publicKey.toString() },
       });
 
-      message.payerKey = from.publicKey;
+      const { swapTransaction, lastValidBlockHeight } = data.data.data[0];
 
-      transaction.message = message.compileToV0Message(
-        addressLookupTableAccounts
-      );
+      const swapTransactionBuf = Buffer.from(swapTransaction, "base64");
+
+      const transaction = VersionedTransaction.deserialize(swapTransactionBuf);
+
       transaction.sign([from]);
-
       const rawTransaction = transaction.serialize();
-
       const txid = await CONNECTION.sendRawTransaction(rawTransaction, {
         skipPreflight: true,
         maxRetries: 2,
       });
       console.log(txid);
-
-      const confirmation = await CONNECTION.confirmTransaction(
-        { signature: txid, blockhash: txid, lastValidBlockHeight },
+      const { blockhash } = await CONNECTION.getLatestBlockhash();
+      await CONNECTION.confirmTransaction(
+        { signature: txid, blockhash, lastValidBlockHeight },
         "confirmed"
       );
-
-      console.log(confirmation);
+      console.log(`https://solscan.io/tx/${txid}`);
     }
   } catch (e: any) {
-    console.log(e.toString());
+    alert(e.toString());
   }
 
   return 0;

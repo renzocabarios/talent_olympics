@@ -9,6 +9,7 @@ import * as bip39 from "bip39";
 import { Keypair } from "@solana/web3.js";
 import SendPage from "./views/send";
 import SendSPLPage from "./views/send-spl";
+import SwapPage from "./views/swap";
 
 // TODOs
 // Create Wallet
@@ -28,14 +29,17 @@ function App() {
   }, []);
 
   return (
-    <div className="w-[360px] flex flex-col gap-4 min-h-[400px]">
-      {current == "send" && <SendPage />}
-      {current == "send-spl" && <SendSPLPage />}
-      {current == "" && <StartPage />}
-      {current == "import" && <ImportPage />}
-      {current == "create" && <CreateAccountPage />}
-      {current == "login" && <LoginPage />}
-      {current == "home" && <HomePage />}
+    <div className="w-full min-h-screen flex justify-center items-center">
+      <div className="relative p-4 border overflow-auto rounded-xl border-ring w-[360px] flex flex-col gap-4 h-[400px]">
+        {current == "swap" && <SwapPage />}
+        {current == "send" && <SendPage />}
+        {current == "send-spl" && <SendSPLPage />}
+        {current == "" && <StartPage />}
+        {current == "import" && <ImportPage />}
+        {current == "create" && <CreateAccountPage />}
+        {current == "login" && <LoginPage />}
+        {current == "home" && <HomePage />}
+      </div>
     </div>
   );
 }

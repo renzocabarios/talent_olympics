@@ -64,6 +64,8 @@ const getSwap = async (_req: Request, _res: Response) => {
     amount: amount as string,
   });
 
+  console.log(quote.data);
+
   const swap = await JUPITER.swap({
     quoteResponse: quote?.data as any,
     userPublicKey: userPublicKey as string,

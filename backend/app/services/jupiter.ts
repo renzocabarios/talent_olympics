@@ -11,7 +11,9 @@ interface IGetQuoteParams {
 }
 
 export async function getQuote(params: IGetQuoteParams) {
-  return await JUPITER.get("quote", { params });
+  return await JUPITER.get("quote", {
+    params: { ...params, autoSlippage: true },
+  });
 }
 
 interface ISwapBody {
@@ -20,7 +22,10 @@ interface ISwapBody {
 }
 
 export async function swap(body: ISwapBody) {
-  return await JUPITER.post("swap", body);
+  return await JUPITER.post("swap", {
+    ...body,
+    wrapAndUnwrapSol: true,
+  });
 }
 
 export default { getQuote, swap };
